@@ -1792,7 +1792,7 @@ Datum
 pgchem_r_molecule_at(PG_FUNCTION_ARGS)
 {
     REACTION *arg_reaction = PG_GETARG_REACTION_P (0);
-    int4 arg_position = PG_GETARG_INT32 (1);
+    int16 arg_position = PG_GETARG_INT32 (1);
     MOLECULE *retval;
     char *offset = MOLARRAYPTR(arg_reaction);
     int i,len;

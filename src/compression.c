@@ -29,7 +29,7 @@ inline COMPRESSED_DATA *compress_data (const char *data, uint32 decompressed_siz
 
     //elog (INFO, "Size :\n %lu",decompressed_size);
 
-    compressed_data = (Byte*) palloc0(compressed_size*sizeof(Byte));
+    compressed_data = (Byte*) palloc(compressed_size*sizeof(Byte));
 
     err = compress2(compressed_data, &compressed_size, (const Bytef*) data, (uLong) decompressed_size, Z_BEST_COMPRESSION);
 
@@ -38,7 +38,7 @@ inline COMPRESSED_DATA *compress_data (const char *data, uint32 decompressed_siz
         elog (ERROR, "Compression failed: %i", err);
     }
 
-    retval = (COMPRESSED_DATA*) palloc0(sizeof(COMPRESSED_DATA));
+    retval = (COMPRESSED_DATA*) palloc(sizeof(COMPRESSED_DATA));
 
     //elog (INFO, "Size :\n %lu",compressed_size);
     retval->compressed_size=(uint32) compressed_size;
@@ -58,7 +58,7 @@ inline DECOMPRESSED_DATA *decompress_data (const char *data, uint32 compressed_s
     DECOMPRESSED_DATA *retval=NULL;
 
     /*data_to_decompress = malloc(compressed_size*sizeof(Bytef));*/
-    decompressed_data = palloc0(decompressed_size*sizeof(Byte));
+    decompressed_data = palloc(decompressed_size*sizeof(Byte));
 
     /*memset(data_to_decompress,0x0, compressed_size);
     memcpy(data_to_decompress,data,compressed_size);*/

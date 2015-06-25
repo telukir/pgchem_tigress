@@ -61,33 +61,20 @@ typedef struct
     unsigned char aromatic;
 } _BOND;
 
-typedef struct
-{
-    size_t num_entries;
-    double *mz;
-    double *intensity;
-    double *intensity_normalized;
-    unsigned int *md;
-} _ISOTOPE_PATTERN;
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-    _ISOTOPE_PATTERN *ob_molfile_to_isotope_pattern(char *molfile, int charge, double normal);
-
     char *ob_molfile_to_smiles (char *molfile, int omit_iso_and_chiral_markings);
     char *ob_molfile_to_canonical_smiles (char *molfile, int omit_iso_and_chiral_markings);
     char *ob_smiles_to_smiles (char *smiles, int omit_iso_and_chiral_markings);
     char *ob_smiles_to_canonical_smiles (char *smiles, int omit_iso_and_chiral_markings);
     char *ob_smiles_to_V2000 (char *smiles);
     char *ob_inchi_to_canonical_smiles (char *inchi, int omit_iso_and_chiral_markings);
-    char *ob_inchi_to_V2000 (char *inchi);
     char *ob_smiles_to_inchi (char *smiles);
     char *ob_smiles_to_inchikey (char *smiles);
     char *ob_molfile_to_inchikey (char *molfile);
-    //char *ob_molfile_to_svg (char *molfile, int gen2d);
-    //_PNG *ob_molfile_to_png (char *molfile, int w, int h, int gen2d);
+    char *ob_smiles_to_svg (char *smiles);
     char *ob_molfile_to_V2000 (char *molfile);
     char *ob_smiles_to_V3000 (char *smiles);
     char *ob_V3000_to_V2000 (char *molfile);

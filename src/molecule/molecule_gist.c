@@ -1,7 +1,7 @@
 /************************************************************************
  * molecule_gist.c molecule GiST support functions
  *
- * Copyright (c) 2007,2013 by Ernst-G. Schmid
+ * Copyright (c) 2007,2011 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -75,8 +75,8 @@ Datum molfp_union (PG_FUNCTION_ARGS);
 inline static MOLFP *
 new_molfp ()
 {
-    MOLFP *fp = (MOLFP *) palloc0 (sizeof(MOLFP));
-    //memset(fp,0x0,sizeof(MOLFP));
+    MOLFP *fp = (MOLFP *) palloc (sizeof(MOLFP));
+    memset(fp,0x0,sizeof(MOLFP));
     return fp;
 }
 
@@ -354,8 +354,8 @@ molfp_picksplit (PG_FUNCTION_ARGS)
 {
   GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER (0);
   GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER (1);
-  int32 len = entryvec->n;
-  int32 lenhalf = len/2;
+  int4 len = entryvec->n;
+  int4 lenhalf = len/2;
   OffsetNumber i;
   MOLFP *datum_l, *datum_r;
 
@@ -418,7 +418,7 @@ molfp_picksplit (PG_FUNCTION_ARGS)
 {
     GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER (0);
     GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER (1);
-    int32 len = entryvec->n;
+    int4 len = entryvec->n;
     MOLFP *entry, *entry_l, *entry_r;
     OffsetNumber i, j;
     MOLFP *datum_l, *datum_r;

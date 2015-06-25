@@ -1,7 +1,7 @@
 /************************************************************************
  * reaction_op.c reaction operator support functions
  *
- * Copyright (c) 2007,2013 by Ernst-G. Schmid
+ * Copyright (c) 2007,2012 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -52,10 +52,10 @@ inline static Datum rss_match(REACTION *query, REACTION *predicate)
     char *offset_q_products = NULL;
     int i,j,m=0;
     int match;
-    int32 q_num_products = query->num_products;
-    int32 q_num_reactants = query->num_reactants;
-    int32 p_num_products = predicate->num_products;
-    int32 p_num_reactants = predicate->num_reactants;
+    int4 q_num_products = query->num_products;
+    int4 q_num_reactants = query->num_reactants;
+    int4 p_num_products = predicate->num_products;
+    int4 p_num_reactants = predicate->num_reactants;
     //int q_r_matches[p_num_reactants];
     //int q_p_matches[p_num_products];
     //int p_r_matches[p_num_reactants];
@@ -370,10 +370,10 @@ reaction_equals (PG_FUNCTION_ARGS)
     char *offset_p = MOLARRAYPTR(predicate);
     char *offset_q_products = NULL;
     int i,j,m=0;//,query_len = predicate->num_products+predicate->num_reactants;
-    int32 q_num_products = query->num_products;
-    int32 q_num_reactants = query->num_reactants;
-    int32 p_num_products = predicate->num_products;
-    int32 p_num_reactants = predicate->num_reactants;
+    int4 q_num_products = query->num_products;
+    int4 q_num_reactants = query->num_reactants;
+    int4 p_num_products = predicate->num_products;
+    int4 p_num_reactants = predicate->num_reactants;
     //int q_r_matches[p_num_reactants];
     //int q_p_matches[p_num_products];
     //int p_r_matches[p_num_reactants];

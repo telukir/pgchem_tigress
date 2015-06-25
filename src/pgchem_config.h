@@ -16,7 +16,7 @@
  ************************************************************************/
 
 #ifdef WIN32
-#define PGCHEM_VERSION "pgchem_tigress_3.2 GiST WIN32"
+#define PGCHEM_VERSION "pgchem_tigress_3.0 GiST WIN32"
 #else
-#define PGCHEM_VERSION "pgchem_tigress_3.2 GiST POSIX"
+#define PGCHEM_VERSION "pgchem_tigress_3.0 GiST POSIX"
 #endif

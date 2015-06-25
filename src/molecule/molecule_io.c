@@ -1,7 +1,7 @@
 /************************************************************************
  * molecule_io.c molecule input/output support functions
  *
- * Copyright (c) 2007,2013 by Ernst-G. Schmid
+ * Copyright (c) 2007,2012 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -354,9 +354,9 @@ new_molecule (char *smiles, char *original_data)
 
     totalsize = CALCDATASZ (compressed_data->compressed_size, sizesmi, sizeanc);
 
-    result = (MOLECULE *) palloc0 (totalsize);
+    result = (MOLECULE *) palloc (totalsize);
 
-    //memset (result, 0x0, totalsize);
+    memset (result, 0x0, totalsize);
 
     if (strchr (smiles, '.') != NULL)
         result->disconnected = true;
@@ -449,9 +449,9 @@ new_molecule (char *smiles, char *original_data, char *ancillarydata)
 
     totalsize = CALCDATASZ (compressed_data->compressed_size, sizesmi, ancsize);
 
-    result = (MOLECULE *) palloc0 (totalsize);
+    result = (MOLECULE *) palloc (totalsize);
 
-    //memset (result, 0x0, totalsize);
+    memset (result, 0x0, totalsize);
 
     if (strchr (smiles, '.') != NULL)
         result->disconnected = true;
@@ -1012,19 +1012,19 @@ molecule_out (PG_FUNCTION_ARGS)
 
     if(molecule->original_format == FORMAT_SMILES)
     {
-        result = (char *) palloc0 (molecule->sizesmi);
+        result = (char *) palloc (molecule->sizesmi);
 
-        //memset(result,0x0,molecule->sizesmi);
+        memset(result,0x0,molecule->sizesmi);
 
         strncpy (result, SMIPTR(molecule), molecule->sizesmi);
     }
     else
     {
-        result = (char *) palloc0 (molecule->sizeo);
+        result = (char *) palloc (molecule->sizeo);
 
         original_data = decompress_data(CIPTR (molecule), molecule->compressed_sizeo, molecule->sizeo);
 
-        //memset(result,0x0,molecule->sizeo);
+        memset(result,0x0,molecule->sizeo);
 
         strncpy (result, original_data->decompressed_data, molecule->sizeo);
     }
@@ -1049,11 +1049,11 @@ molecule_recv (PG_FUNCTION_ARGS)
     StringInfo buf = (StringInfo) PG_GETARG_POINTER (0);
     int len = buf->len;
     const char *str = pq_getmsgbytes (buf, len);
-    MOLECULE *result = (MOLECULE *) palloc0 (len);
+    MOLECULE *result = (MOLECULE *) palloc (len);
 
     //SET_VARSIZE (result,(buf->len + VARHDRSZ));
 
-    //memset(result,0x0,len);
+    memset(result,0x0,len);
 
     memcpy (result, str, len);
 

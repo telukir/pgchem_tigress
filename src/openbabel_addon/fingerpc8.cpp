@@ -1,14 +1,14 @@
 /**********************************************************************
 finger3.cpp: Fingerprint based on list of SMARTS patterns
 Copyright (C) 2005 Chris Morley
-
+ 
 This file is part of the Open Babel project.
 For more information, see <http://openbabel.sourceforge.net/>
-
+ 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation version 2 of the License.
-
+ 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,15 +41,15 @@ protected:
   string _patternsfile;
 
 public:
-  PatternCountFP(const char* ID, const char* filename=NULL,
+  PatternCountFP(const char* ID, const char* filename=NULL, 
       bool IsDefault=false) : OBFingerprint(ID, IsDefault)
   {
     if(filename==NULL)
-      _patternsfile="dictionary.txt";
+      _patternsfile="patterns.txt";
     else
       _patternsfile = filename;
   };
-
+  
   virtual const char* Description()
   {
     static string desc;
@@ -58,20 +58,20 @@ public:
   };
 
   //Each bit represents a single substructure; no need for confirmation when substructure searching
-  virtual unsigned int Flags() { return FPT_UNIQUEBITS;};
+  virtual unsigned int Flags() { return FPT_UNIQUEBITS;}; 
 
-  bool GetFingerprint(OBBase* pOb, vector<unsigned int>&fp, int nbits)
+  bool GetFingerprint(OBBase* pOb, vector<unsigned int>&fp, int nbits) 
   {
     OBMol* pmol = dynamic_cast<OBMol*>(pOb);
-
+    
    	unsigned int o=0;
    	unsigned int m=0;
    	unsigned int i=0;
    	unsigned int n=0;
-
+    
     if(!pmol)
       return false;
-
+    
     //Read patterns file if it has not been done already
     if(smartsStrings.empty())
       ReadPatternFile(_patternsfile, smartsStrings);
@@ -80,14 +80,14 @@ public:
     //unsigned int n=Getbitsperint();
     //while(n<smartsStrings.size())n*=2;
     //fp.resize(n/Getbitsperint());
-
+    
     fp.resize(16);
 
     for(n=0;n<smartsStrings.size();++n)
 		{
 			OBSmartsPattern sp;
 			sp.Init(smartsStrings[n]);
-
+			
 			if(sp.Match(*pmol)) {
 			    m=sp.GetUMapList().size();
 			    //m=sp.NumMatches();
@@ -95,10 +95,10 @@ public:
 			    for(i=0;i<8;++i) {
 			           if(i<m) {SetBit(fp, o+i);
 			           //cout << "1";
-			       }
-          //cout << endl;
-				}
-				}
+			       }  
+          //cout << endl;  
+				}				
+				}				
 		}
 
     if(nbits)
@@ -113,11 +113,11 @@ public:
     //Output strings in vector are SMARTS + comments
     string file = filename;
     ifstream ifs;
-#ifdef HAVE_SSTREAM
-	  stringstream errorMsg;
-#else
-	  strstream errorMsg;
-#endif
+#ifdef HAVE_SSTREAM 
+	  stringstream errorMsg; 
+#else 
+	  strstream errorMsg; 
+#endif 
 
     if (OpenDatafile(ifs, filename).length() == 0) {
       errorMsg << "Cannot open " << filename << endl;
@@ -127,8 +127,8 @@ public:
 
     if(!(ifs))
       {
-        errorMsg << "Cannot open " << filename << endl;
-        obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obError);
+        errorMsg << "Cannot open " << filename << endl; 
+        obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obError); 
         return false;
       }
     string smarts, formatline;
@@ -138,8 +138,8 @@ public:
     {
       while(ifs.good())
       {
-        if( getline(ifs,smarts)
-            && Trim(smarts).size() > 0
+        if( getline(ifs,smarts) 
+            && Trim(smarts).size() > 0 
             && smarts[0] != '#')
           lines.push_back(smarts); //leave the comments in
       }
@@ -174,7 +174,7 @@ public:
 virtual string DescribeBits(const vector<unsigned int> fp, bool bSet=true)
 {
   //checkmol-type output with tab separated functional group names
-  stringstream ss;
+  stringstream ss; 
 /*  ss << "out of possible " << smartsStrings.size();
   if(!bSet)
     ss << "\nUnset bits:";
@@ -207,7 +207,7 @@ Looks for this file first in the folder in the environment variable
 BABEL_DATADIR, then in the folder specified by the macro BABEL_DATADIR
 (probably set during compilation in babelconfig.h), and then in the current folder.
 
-On each line there is a SMARTS string and anything
+On each line there is a SMARTS string and anything 
 after a space is ignored. Lines starting with # are ignored.
 
 Additional fingerprint types using patterns in different files

@@ -33,8 +33,7 @@ Datum pgchem_molecule_to_canonical_smiles (PG_FUNCTION_ARGS);
 Datum pgchem_molecule_to_inchi (PG_FUNCTION_ARGS);
 Datum pgchem_molecule_to_inchikey (PG_FUNCTION_ARGS);
 
-//Datum pgchem_molecule_to_svg (PG_FUNCTION_ARGS);
-//Datum pgchem_molecule_to_png (PG_FUNCTION_ARGS);
+Datum pgchem_molecule_to_svg (PG_FUNCTION_ARGS);
 
 Datum pgchem_total_charge (PG_FUNCTION_ARGS);
 Datum pgchem_num_atoms (PG_FUNCTION_ARGS);
@@ -95,7 +94,6 @@ Datum pgchem_r_molecule_at (PG_FUNCTION_ARGS);
 Datum pgchem_r_reaction_to_smiles (PG_FUNCTION_ARGS);
 Datum pgchem_tversky (PG_FUNCTION_ARGS);
 Datum pgchem_spectrophore (PG_FUNCTION_ARGS);
-Datum pgchem_isotope_pattern (PG_FUNCTION_ARGS);
 
 //Datum reversestring(PG_FUNCTION_ARGS);
 

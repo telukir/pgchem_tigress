@@ -1,7 +1,7 @@
 /************************************************************************
  * molecule_op.c molecule operator support functions
  *
- * Copyright (c) 2007,2013 by Ernst-G. Schmid
+ * Copyright (c) 2007,2012 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *

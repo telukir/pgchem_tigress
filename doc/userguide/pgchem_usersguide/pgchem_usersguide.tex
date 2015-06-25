@@ -7,7 +7,7 @@
 \begin{document}
 \title{pgchem::tigress -- A chemoinformatics extension for PostgreSQL: User Guide}
 \author{Ernst-Georg Schmid}
-\date{v.3.2	-- Spring 2015}
+\date{v.2.0	GiST -- Winter 2010}
 \maketitle%\newpage
 		%\includegraphics[width=5cm]{tigress.png}
 		%\includegraphics[width=5cm]{barsoi.png}
@@ -23,7 +23,7 @@ Notably, pgchem::tigress was not designed to be used in GxP environments, for ma
 pgchem::tigress is a chemoinformatics extension to the PostgreSQL object-relational database management system. It enables PostgreSQL to handle chemical datatypes. Pgchem::tigress is basically a wrapper around the checkmol/matchmol molecular analyzer and the OpenBabel computational chemistry package, plus some database functions, datatypes, a GiST index and auxiliary tables to access their functionality purely through SQL statements.\par
 Pgchem::tigress supports exact and substructure searching on molecules, searching by functional groups, calculation of chemical properties like molecular formula and molecular weight and Tanimoto similarity searching.\par
 pgchem::tigress is \copyright~Ernst-Georg Schmid and released under the lesser GNU Public License 2.1.
-As of version 8.x of PostgreSQL, pgchem::tigress compiles and runs natively (at least) on Linux, OS X and Windows. 
+As of version 8.x of PostgreSQL, pgchem::tigress compiles and runs natively (at least) on Linux, Solaris, OS X and Win32. 
 \section{Why PostgreSQL?}
 Because it is tried and tested, suitable for heavy-duty applications and has a clean interface for custom extensions. So far it has proven to be a good choice, but there are no reasons why there should not be a fbchem::tigress for Firebird or an orachem::tigress for Oracle in the future. Actually, mychem for MySQL has started at http://sourceforge.net/projects/mychem/.
 \part{Designing your schema}
@@ -162,8 +162,6 @@ SELECT <moleculetable>.<key> FROM
 \item\textit{inchi(molecule)} takes a molecule and converts it to a IUPAC InChI string.
 \item\textit{inchikey(molecule)} takes a molecule and converts it to a IUPAC InChI-key string.
 \end{itemize}
-\section{Depiction}
-Since so many molecular imaging code is unpredictable in it's behaviour, tends to allocate large memory blocks, requires many external libraries and sometimes even depends on specific operating system contextes being available, and, above all, is subject to user opinion how a chemical depiction should look like -- so there are no depiction functions in pgchem::tigress by design. There are enough external options available to generate depictions if needed.
 \section{Manipulation}
 \begin{itemize}
 \item\textit{strip\_salts(molecule,bool)} takes a molecule and strips all atoms except for the largest contiguous fragment. If the second parameter is true, the charge(s) of the result are neutralized.

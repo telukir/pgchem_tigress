@@ -6,7 +6,7 @@ Version=4
 MainFile=pgchem_usersguide.tex
 UseBibTeX=0
 UseMakeIndex=0
-ActiveProfile=LaTeX ⇨ PDF
+ActiveProfile=LaTeX => PDF
 ProjectLanguage=de
 ProjectDialect=DE
 

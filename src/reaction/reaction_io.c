@@ -1,7 +1,7 @@
 /************************************************************************
  * reaction_io.c reaction input/output support functions
  *
- * Copyright (c) 2007,2013 by Ernst-G. Schmid
+ * Copyright (c) 2007,2012 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -51,9 +51,9 @@ new_reaction (MOLECULE *mols[], int numreactants, int numproducts, int mode)
 
     totalsize = (RCALCDATASZ (datasize))*sizeof(char);
 
-    result = (REACTION *) palloc0 (totalsize);
+    result = (REACTION *) palloc (totalsize);
 
-    //memset (result, 0x0, totalsize);
+    memset (result, 0x0, totalsize);
 
     result->datasize = datasize;
     result->num_reactants = numreactants;
@@ -120,9 +120,9 @@ static REACTION *make_reaction(const char *raw_input, const int size)
 
     maxbuflen = (size+(mode==1 ? 3 : 2))*sizeof(char);
 
-    rxnfile=(char*)palloc0(maxbuflen);
+    rxnfile=(char*)palloc(maxbuflen);
 
-    //memset(rxnfile,0x0,maxbuflen);
+    memset(rxnfile,0x0,maxbuflen);
 
     memcpy(rxnfile,raw_input,size*sizeof(char));
 
@@ -402,9 +402,9 @@ reaction_out (PG_FUNCTION_ARGS)
 
     slack = (37 + (reaction->num_products+reaction->num_reactants)*8)*sizeof(char);
 
-    result = (char *) palloc0 (slack*reaction->datasize*sizeof(char));
+    result = (char *) palloc (slack*reaction->datasize*sizeof(char));
 
-    //memset(result,0x0,slack*reaction->datasize*sizeof(char));
+    memset(result,0x0,slack*reaction->datasize*sizeof(char));
 
     /*  for(i=0;i<reaction->num_reactants;i++) {
       tmpMol = (MOLECULE*) offset;
@@ -478,11 +478,11 @@ reaction_recv (PG_FUNCTION_ARGS)
     StringInfo buf = (StringInfo) PG_GETARG_POINTER (0);
     int len = buf->len;
     const char *str = pq_getmsgbytes (buf, len);
-    REACTION *result = (REACTION *) palloc0 (len);
+    REACTION *result = (REACTION *) palloc (len);
 
     //SET_VARSIZE (result,(buf->len + VARHDRSZ));
 
-    //memset(result,0x0,len);
+    memset(result,0x0,len);
 
     memcpy (result, str, len);
 

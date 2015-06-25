@@ -1,5 +1,5 @@
 LIBS=-lm
-SHLIBFLAGS=-DMAKE_SHARED_LIBRARY -shared -fpic -o libbarsoi.so
+SHLIBFLAGS=-DMAKE_SHARED_LIBRARY -shared -fPIC -o libbarsoi.so
 EXEFLAGS=-o checkmol
 
 CC=gcc

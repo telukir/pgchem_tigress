@@ -5,6 +5,10 @@ START=$(date +%s)
 POSTGRESQL_LIB_DIR=/usr/lib/postgresql/9.4/lib
 OB_INSTALL_DIR=$POSTGRESQL_LIB_DIR/openbabel
 ##################################################################################
+echo "Required software installation. The script is trying to install following packages: gcc(build-essential, perl, python2.7, mawk, bison, flex, zlibc, libxml2"
+sudo apt-get install build-essential checkinstall perl python2.7 mawk bison flex libreadline6 libreadline6-dev zlibc libeigen3-dev libcairo2-dev cmake libxml2
+
+##################################################################################
 read -p "Do you want to delete old library files?(Yy/Nn) " -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -19,9 +23,16 @@ then
 fi
 ##################################################################################
 echo "Starting the process.. ==================================>>>>>>>>>>>>>>>>>>>>>>"
-apt-get source postgresql-9.4
-mv postgresql-9.4-9.4.4 postgresql #had to be changed accordingly
-cd postgresql
+read -p "Have you checked the version of the Postgresql? If you have checked say (Y or y) else say (N or n) and edit your postgresql version in line 27:" -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	apt-get source postgresql-9.4
+	mv postgresql-9.4-9.4.5 postgresql #had to be changed accordingly
+	cd postgresql
+else
+	exit
+fi
 ########################################################################################
 echo "Configuring PostgreSql...==============================>>>>>>>>>>>>>>>>>>>>>>>"
 ./configure
@@ -92,6 +103,16 @@ then
 
 	echo '$POSTGRESQL_LIB_DIR/' | sudo tee -a /etc/ld.so.conf.d/libc.conf
 	sudo ldconfig
+fi
+
+read -p "Do you want to continue to copy to your /usr/lib location?(Yy/Nn) " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	sudo ln -s $POSTGRESQL_LIB_DIR/libinchi.so.0.4.1 /usr/lib/libinchi.so.0
+	sudo ln -s $POSTGRESQL_LIB_DIR/inchiformat.so /usr/lib/inchiformat.so
+	sudo ln -s $POSTGRESQL_LIB_DIR/libinchi.so.0 /usr/lib/libinchi.so
+	sudo ln -s $POSTGRESQL_LIB_DIR/libopenbabel.so.4 /usr/lib/libopenbabel.so
+	sudo ln -s $POSTGRESQL_LIB_DIR/libbarsoi.so /usr/lib/libbarsoi.so
 fi
 END=$(date +%s)
 DIFF=$(( $END - $START ))

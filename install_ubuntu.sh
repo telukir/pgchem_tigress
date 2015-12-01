@@ -10,6 +10,7 @@ echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Nn]$ ]]
 then
 	echo "Set the postgresql apt repository as given in the following website according to your version: http://www.postgresql.org/download/linux/ubuntu/"
+	echo "Also add the src line of the postgresql: for example in 14.04: (deb-src http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main)"
 fi
 ##################################################################################
 echo "Required software installation. The script is trying to install following packages: gcc(build-essential, perl, python2.7, mawk, bison, flex, zlibc, libxml2"

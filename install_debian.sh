@@ -23,7 +23,7 @@ then
 fi
 ##################################################################################
 echo "Starting the process.. ==================================>>>>>>>>>>>>>>>>>>>>>>"
-read -p "Have you checked the version of the Postgresql? If you have checked say (Y or y) else say (N or n) and edit your postgresql version in line 27:" -n 1 -r
+read -p "Have you checked the version of the Postgresql? If you have checked say (Y or y) else say (N or n) and edit your postgresql version in line 31:" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then

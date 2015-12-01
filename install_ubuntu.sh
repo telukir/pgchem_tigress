@@ -5,6 +5,13 @@ START=$(date +%s)
 POSTGRESQL_LIB_DIR=/usr/lib/postgresql/9.4/lib
 OB_INSTALL_DIR=$POSTGRESQL_LIB_DIR/openbabel
 ##################################################################################
+read -p "Have you set the postgresql apt repository settings?(Yy/Nn)" -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Nn]$ ]]
+then
+	echo "Set the postgresql apt repository as given in the following website according to your version: http://www.postgresql.org/download/linux/ubuntu/"
+fi
+##################################################################################
 echo "Required software installation. The script is trying to install following packages: gcc(build-essential, perl, python2.7, mawk, bison, flex, zlibc, libxml2"
 sudo apt-get install build-essential checkinstall perl python2.7 mawk bison flex libreadline6 libreadline6-dev zlibc libeigen3-dev libcairo2-dev cmake libxml2
 

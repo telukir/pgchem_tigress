@@ -1,7 +1,7 @@
 /************************************************************************
  * functions.c native chemistry handling functions
  *
- * Copyright (c) 2004,2012 by Ernst-G. Schmid
+ * Copyright (c) 2004,2016 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -22,6 +22,8 @@
 
 #include <postgres.h>
 #include <fmgr.h>
+#include <funcapi.h>
+#include <access/htup_details.h>
 #include <utils/varbit.h>
 #include <mb/pg_wchar.h>
 #include "functions.h"
@@ -542,8 +544,8 @@ smiles_fail:
 
     len = strlen (tmpSmiles);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -586,8 +588,8 @@ smiles_fail:
 
     len = strlen (tmpSmiles);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -628,8 +630,8 @@ inchi_fail:
 
     len = strlen (tmpInChI);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -677,8 +679,8 @@ v3000_fail:
 
     len = strlen (tmpV3000);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len+VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len+VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -723,8 +725,8 @@ molfile_fail:
 
     len = strlen (tmpMolfile);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len+VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len+VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -768,8 +770,8 @@ pgchem_hillformula (PG_FUNCTION_ARGS)
 
     len = strlen (tmpFormula);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -977,7 +979,7 @@ pgchem_ms_fingerprint_long_a (PG_FUNCTION_ARGS)
 
     len = strlen (fpbuffer);
 
-    retval = (text *) palloc (len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -1021,7 +1023,7 @@ pgchem_ms_fingerprint_short_a (PG_FUNCTION_ARGS)
 
     len = strlen (fpbuffer);
 
-    retval = (text *) palloc (len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -1063,7 +1065,7 @@ pgchem_fgroup_codes_a (PG_FUNCTION_ARGS)
 
     len = strlen (fpbuffer);
 
-    retval = (text *) palloc (len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -1351,8 +1353,8 @@ pgchem_smartsfilter (PG_FUNCTION_ARGS)
     MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (1);
     int smarts_string_len = VARSIZE (arg_smarts) - VARHDRSZ;
     int match = 0;
-    char *tmpSMARTS = (char *) palloc (smarts_string_len + 1);
-    tmpSMARTS[0] = '\0';
+    char *tmpSMARTS = (char *) palloc0 (smarts_string_len + 1);
+    //tmpSMARTS[0] = '\0';
 #ifdef BUILD_WITH_INDIGO
     int molhandle,queryhandle,matcherhandle;
 #endif
@@ -1393,8 +1395,8 @@ pgchem_smartsfilter_count (PG_FUNCTION_ARGS)
     text *arg_smarts = PG_GETARG_TEXT_P (0);
     MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (1);
     int smarts_string_len = VARSIZE (arg_smarts) - VARHDRSZ;
-    char *tmpSMARTS = (char *) palloc (smarts_string_len + 1);
-    tmpSMARTS[0] = '\0';
+    char *tmpSMARTS = (char *) palloc0 (smarts_string_len + 1);
+    //tmpSMARTS[0] = '\0';
 
     strncat (tmpSMARTS, VARDATA (arg_smarts), smarts_string_len);
 
@@ -1461,15 +1463,82 @@ pgchem_molecule_to_inchikey (PG_FUNCTION_ARGS)
     text *retval;
     MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (0);
 
-    retval = (text *) palloc (INCHIKEYSZ + VARHDRSZ);
+    retval = (text *) palloc0 (INCHIKEYSZ + VARHDRSZ);
 
-    memset(retval,0x0,INCHIKEYSZ + VARHDRSZ);
+    //memset(retval,0x0,INCHIKEYSZ + VARHDRSZ);
 
     memcpy (VARDATA (retval), arg_molecule->inchikey, INCHIKEYSZ);
 
     SET_VARSIZE (retval,(INCHIKEYSZ + VARHDRSZ));
 
     PG_RETURN_TEXT_P (retval);
+}
+
+/*PG_FUNCTION_INFO_V1 (pgchem_molecule_to_png);
+
+Datum
+pgchem_molecule_to_png (PG_FUNCTION_ARGS)
+{
+    //TODO: rewrite for Indigo
+    _PNG *tmpPNG=NULL;
+    bytea *retval;
+    MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (0);
+    int32 w = PG_GETARG_INT32 (1);
+    int32 h = PG_GETARG_INT32 (2);
+    bool gen2d = PG_GETARG_BOOL (3);
+    size_t len;
+    DECOMPRESSED_DATA *original_data;
+    const char pngheader[8] = {-119,80,78,71,13,10,26,10};
+    char *molfile=NULL;
+
+    original_data = decompress_data(CIPTR(arg_molecule),arg_molecule->compressed_sizeo, arg_molecule->sizeo);
+
+    //elog (WARNING, "%s",original_data->decompressed_data);
+
+    switch (arg_molecule->original_format)
+    {
+    case FORMAT_V3000:
+    case FORMAT_V2000:
+        molfile = original_data->decompressed_data;
+        tmpPNG = ob_molfile_to_png (molfile, w, h, gen2d ? 1 : 0);
+        break;
+    case FORMAT_INCHI:
+        molfile=ob_inchi_to_V2000(original_data->decompressed_data);
+        tmpPNG = ob_molfile_to_png (molfile, w, h, gen2d ? 1 : 0);
+        free(molfile);
+        break;
+    case FORMAT_SMILES:
+        molfile=ob_smiles_to_V2000(original_data->decompressed_data);
+        tmpPNG = ob_molfile_to_png (molfile, w, h, gen2d ? 1 : 0);
+        free(molfile);
+        break;
+    default:
+        goto png_fail;
+    }
+
+    if(tmpPNG == NULL)
+    {
+        goto png_fail;
+    }
+    else if (memcmp(&pngheader[0],tmpPNG->data,sizeof(pngheader)) != 0)
+    {
+        free(tmpPNG);
+png_fail:
+        elog (ERROR, "PNG generation failed! Offender was :\n %s",original_data->decompressed_data);
+    }
+
+    len = tmpPNG->datasz;
+
+    retval = (bytea *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len+VARHDRSZ);
+
+    SET_VARSIZE (retval,(len + VARHDRSZ));
+
+    memcpy (VARDATA (retval), tmpPNG->data, len);
+
+    free (tmpPNG);
+
+    PG_RETURN_BYTEA_P (retval);
 }
 
 PG_FUNCTION_INFO_V1 (pgchem_molecule_to_svg);
@@ -1481,10 +1550,33 @@ pgchem_molecule_to_svg (PG_FUNCTION_ARGS)
     char *tmpSVG=NULL;
     text *retval;
     MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (0);
+    bool gen2d = PG_GETARG_BOOL (1);
     int len;
     DECOMPRESSED_DATA *original_data;
+    char *molfile=NULL;
 
-    tmpSVG = ob_smiles_to_svg (SMIPTR(arg_molecule));
+    original_data = decompress_data(CIPTR(arg_molecule),arg_molecule->compressed_sizeo, arg_molecule->sizeo);
+
+    switch (arg_molecule->original_format)
+    {
+    case FORMAT_V3000:
+    case FORMAT_V2000:
+        molfile = original_data->decompressed_data;
+        tmpSVG = ob_molfile_to_svg (molfile, gen2d ? 1 : 0);
+        break;
+    case FORMAT_INCHI:
+        molfile=ob_inchi_to_V2000(original_data->decompressed_data);
+        tmpSVG = ob_molfile_to_svg (molfile, gen2d ? 1 : 0);
+        free(molfile);
+        break;
+    case FORMAT_SMILES:
+        molfile=ob_smiles_to_V2000(original_data->decompressed_data);
+        tmpSVG = ob_molfile_to_svg (molfile, gen2d ? 1 : 0);
+        free(molfile);
+        break;
+    default:
+        goto svg_fail;
+    }
 
     if(tmpSVG == NULL)
     {
@@ -1494,14 +1586,13 @@ pgchem_molecule_to_svg (PG_FUNCTION_ARGS)
     {
         free(tmpSVG);
 svg_fail:
-        original_data = decompress_data(CIPTR(arg_molecule),arg_molecule->compressed_sizeo, arg_molecule->sizeo);
         elog (ERROR, "SVG generation failed! Offender was :\n %s",original_data->decompressed_data);
     }
 
     len = strlen (tmpSVG);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len+VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len+VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -1510,7 +1601,7 @@ svg_fail:
     free (tmpSVG);
 
     PG_RETURN_TEXT_P (retval);
-}
+}*/
 
 /*
 * Get binary fingerprint as bit varying
@@ -1529,7 +1620,7 @@ pgchem_fp_out (PG_FUNCTION_ARGS)
     len = (OB_FPSIZE2+OB_FPSIZE3)*sizeof(uint32);
 #endif
 
-    retval = (VarBit *) palloc (len + VARBITHDRSZ);
+    retval = (VarBit *) palloc0 (len + VARBITHDRSZ);
 
 #ifdef BUILD_WITH_INDIGO
     memcpy(VARBITS(retval),&arg_molecule->fp.bytes[IN_FPSTART],len);
@@ -1557,7 +1648,7 @@ pgchem_fp_MACCS (PG_FUNCTION_ARGS)
     int len = OB_FPSIZE_MACCS*sizeof(uint32);
     uint32 *tmp_maccs;
 
-    retval = (VarBit *) palloc (len + VARBITHDRSZ);
+    retval = (VarBit *) palloc0 (len + VARBITHDRSZ);
 
     tmp_maccs = (uint32*) palloc(len);
 
@@ -1584,7 +1675,7 @@ pgchem_r_fp_out (PG_FUNCTION_ARGS)
     REACTION *arg_reaction = PG_GETARG_REACTION_P (0);
     int len = 2*OB_FPSIZE2*sizeof(uint32);
 
-    retval = (VarBit *) palloc (len + VARBITHDRSZ);
+    retval = (VarBit *) palloc0 (len + VARBITHDRSZ);
 
     memcpy(VARBITS(retval),arg_reaction->fp,len);
 
@@ -1622,8 +1713,8 @@ desc_fail:
 
     len = strlen (tmpDESC);
 
-    retval = (text *) palloc (len + VARHDRSZ);
-    memset(retval,0x0,len+VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
+    //memset(retval,0x0,len+VARHDRSZ);
 
     SET_VARSIZE (retval,(len + VARHDRSZ));
 
@@ -1792,7 +1883,7 @@ Datum
 pgchem_r_molecule_at(PG_FUNCTION_ARGS)
 {
     REACTION *arg_reaction = PG_GETARG_REACTION_P (0);
-    int16 arg_position = PG_GETARG_INT32 (1);
+    int32 arg_position = PG_GETARG_INT32 (1);
     MOLECULE *retval;
     char *offset = MOLARRAYPTR(arg_reaction);
     int i,len;
@@ -1807,9 +1898,9 @@ pgchem_r_molecule_at(PG_FUNCTION_ARGS)
 
     len = VARSIZE((MOLECULE*)offset)*sizeof(char);
 
-    retval = (MOLECULE*) palloc(len);
+    retval = (MOLECULE*) palloc0(len);
 
-    memset(retval,0x0,len);
+    //memset(retval,0x0,len);
 
     memcpy(retval,(MOLECULE*)offset,len);
 
@@ -1836,9 +1927,9 @@ pgchem_r_reaction_to_smiles (PG_FUNCTION_ARGS)
 
     offset = MOLARRAYPTR(reaction);
 
-    tmpBuf = (char *) palloc (size+sizeof(char));
+    tmpBuf = (char *) palloc0 (size+sizeof(char));
 
-    memset(tmpBuf,0x0,size+sizeof(char));
+    //memset(tmpBuf,0x0,size+sizeof(char));
 
     for(i=0; i<reaction->num_reactants; i++)
     {
@@ -1872,9 +1963,9 @@ pgchem_r_reaction_to_smiles (PG_FUNCTION_ARGS)
         offset+=VARSIZE(tmpMol)*sizeof(char);
     }
 
-    result = (text *) palloc(strlen(tmpBuf)+VARHDRSZ);
+    result = (text *) palloc0(strlen(tmpBuf)+VARHDRSZ);
 
-    memset(result,0x0,strlen(tmpBuf)+VARHDRSZ);
+    //memset(result,0x0,strlen(tmpBuf)+VARHDRSZ);
 
     memcpy(VARDATA(result),tmpBuf,strlen(tmpBuf));
 
@@ -1919,9 +2010,9 @@ pgchem_spectrophore (PG_FUNCTION_ARGS)
 
     len = strlen(spectrophore);
 
-    retval = (text *) palloc (len + VARHDRSZ);
+    retval = (text *) palloc0 (len + VARHDRSZ);
 
-    memset(retval,0x0,len + VARHDRSZ);
+    //memset(retval,0x0,len + VARHDRSZ);
 
     memcpy (VARDATA (retval), spectrophore, len);
 
@@ -1930,51 +2021,128 @@ pgchem_spectrophore (PG_FUNCTION_ARGS)
     PG_RETURN_TEXT_P (retval);
 }
 
-/*
- * reverse procedural function
- *
- * Thomas Reiss, 12/07/2007 – 24/07/2007 - 02/08/2007
- * Alain Delorme, 24/07/2007
- * Merci à depesz pour ses tests sur la version 8.3devel
- *
- */
-/*PG_FUNCTION_INFO_V1(reversestring);
+PG_FUNCTION_INFO_V1 (pgchem_isotope_pattern);
 
 Datum
-reversestring(PG_FUNCTION_ARGS)
+pgchem_isotope_pattern (PG_FUNCTION_ARGS)
 {
-    int len, pos = 0;
-    VarChar *str_out, *str_in;
+    _ISOTOPE_PATTERN *isotope_pattern = NULL;
+    _ISOTOPE_PATTERN *pattern_copy = NULL;
+    FuncCallContext *ctx=NULL;
+    MemoryContext original_ctx=NULL;
+    DECOMPRESSED_DATA *original_data=NULL;
+    char *tmpMolfile=NULL;
 
-    /* Obtient l'adresse de l'argument
-    str_in = PG_GETARG_VARCHAR_P_COPY(0);
-    /* Calcul de la taille en octet de la chaîne
-    len = (int) (VARSIZE(str_in) - VARHDRSZ);
-
-    /* Créer une chaîne vide de taille identique
-    str_out = (VarChar *)palloc(VARSIZE(str_in));
-    /* La structure résultante aura une longueur identique
-    SET_VARSIZE(str_out, VARSIZE(str_in));
-
-    /* Vérifie que l'encodage de la chaîne en argument
-     * concorde avec l'encodage de la BDD
-    pg_verifymbstr(VARDATA(str_in), len, false);
-
-    /* Copie à l'envers de la chaîne
-    while (pos < len)
+    if(SRF_IS_FIRSTCALL())
     {
-        int charlen = pg_mblen(VARDATA(str_in) + pos);
-        int i = charlen;
-        /* Copie un caractère.
-         * !! Un caractère != un octet
-        while (i--)
-            *(VARDATA(str_out) + len - charlen + i - pos) = *(VARDATA(str_in) + i + pos);
-        pos = pos + charlen;     /* incrémente le compteur
+        MOLECULE *arg_molecule = PG_GETARG_MOLECULE_P (0);
+        int32 arg_charge = PG_GETARG_INT32 (1);
+        float8 arg_normal = PG_GETARG_FLOAT8 (2);
+        ctx = SRF_FIRSTCALL_INIT();
+
+        original_ctx = MemoryContextSwitchTo(ctx->multi_call_memory_ctx);
+
+        if(arg_molecule->original_format==FORMAT_V2000 || arg_molecule->original_format==FORMAT_V3000)
+        {
+            original_data = decompress_data(CIPTR(arg_molecule),arg_molecule->compressed_sizeo, arg_molecule->sizeo);
+            tmpMolfile = strdup(original_data->decompressed_data);
+        }
+        else
+        {
+            tmpMolfile = ob_smiles_to_V2000 (SMIPTR(arg_molecule));
+        }
+
+        isotope_pattern = ob_molfile_to_isotope_pattern(tmpMolfile, arg_charge, arg_normal);
+
+        if(NULL!=tmpMolfile)
+        {
+            free(tmpMolfile);
+        }
+
+        if(NULL == isotope_pattern)
+        {
+            elog (ERROR, "Could not generate isotope pattern!");
+            PG_RETURN_NULL();
+        }
+
+        pattern_copy = (_ISOTOPE_PATTERN*) palloc0(sizeof(_ISOTOPE_PATTERN));
+        pattern_copy->mz = (double*) palloc0(isotope_pattern->num_entries*sizeof(double));
+        pattern_copy->intensity = (double*) palloc0(isotope_pattern->num_entries*sizeof(double));
+        pattern_copy->intensity_normalized = (double*) palloc0(isotope_pattern->num_entries*sizeof(double));
+        pattern_copy->md = (unsigned int*) palloc0(isotope_pattern->num_entries*sizeof(unsigned int));
+
+        pattern_copy->num_entries = isotope_pattern->num_entries;
+
+        memcpy(pattern_copy->mz, isotope_pattern->mz, isotope_pattern->num_entries*sizeof(double));
+        memcpy(pattern_copy->intensity, isotope_pattern->intensity, isotope_pattern->num_entries*sizeof(double));
+        memcpy(pattern_copy->intensity_normalized, isotope_pattern->intensity_normalized, isotope_pattern->num_entries*sizeof(double));
+        memcpy(pattern_copy->md, isotope_pattern->md, isotope_pattern->num_entries*sizeof(unsigned int));
+
+        if(NULL != isotope_pattern->md)
+            free(isotope_pattern->md);
+
+        if(NULL != isotope_pattern->mz)
+            free(isotope_pattern->mz);
+
+        if(NULL != isotope_pattern->intensity)
+            free(isotope_pattern->intensity);
+
+        if(NULL != isotope_pattern->intensity_normalized)
+            free(isotope_pattern->intensity_normalized);
+
+        if(NULL != isotope_pattern)
+            free(isotope_pattern);
+
+        isotope_pattern = NULL;
+
+        ctx->max_calls = pattern_copy->num_entries;
+        ctx->user_fctx = pattern_copy;
+
+        if(get_call_result_type(fcinfo, NULL, &ctx->tuple_desc) != TYPEFUNC_COMPOSITE)
+        {
+            elog (ERROR, "Calling the isotope pattern SRF in a context that does not expect tuples in return is not supported!");
+        }
+
+        BlessTupleDesc(ctx->tuple_desc);
+
+        MemoryContextSwitchTo(original_ctx);
     }
-    PG_FREE_IF_COPY(str_in, 0);
-    /* Retourne la copie
-    PG_RETURN_VARCHAR_P(str_out);
-}*/
+
+    ctx = SRF_PERCALL_SETUP();
+
+    isotope_pattern = ctx->user_fctx;
+
+    if(ctx->call_cntr < ctx->max_calls)
+    {
+        HeapTuple rettuple = NULL;
+        Datum *retvals;
+        bool *retnulls;
+
+        retvals = (Datum*) palloc0(4*sizeof(Datum));
+        retnulls = (bool*) palloc0(4*sizeof(bool));
+
+        retvals[0] = Float8GetDatum(isotope_pattern->mz[ctx->call_cntr]);
+        retvals[1] = Float8GetDatum(isotope_pattern->intensity[ctx->call_cntr]);
+        retvals[2] = Float8GetDatum(isotope_pattern->intensity_normalized[ctx->call_cntr]);
+        retvals[3] = Int8GetDatum(isotope_pattern->md[ctx->call_cntr]);
+
+        retnulls[0] = false;
+        retnulls[1] = false;
+        retnulls[2] = false;
+        retnulls[3] = false;
+
+        rettuple = heap_form_tuple(ctx->tuple_desc, retvals, retnulls);
+
+        pfree(retvals);
+        pfree(retnulls);
+
+        SRF_RETURN_NEXT(ctx, HeapTupleGetDatum(rettuple));
+    }
+    else
+    {
+        SRF_RETURN_DONE(ctx);
+    }
+}
 
 /*
 * Find maximum shortest path of molecule.

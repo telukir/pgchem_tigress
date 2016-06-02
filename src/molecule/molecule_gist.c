@@ -418,7 +418,7 @@ molfp_picksplit (PG_FUNCTION_ARGS)
 {
     GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER (0);
     GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER (1);
-    int16 len = entryvec->n;
+    int4 len = entryvec->n;
     MOLFP *entry, *entry_l, *entry_r;
     OffsetNumber i, j;
     MOLFP *datum_l, *datum_r;

@@ -305,7 +305,7 @@ rxnfp_picksplit (PG_FUNCTION_ARGS)
 {
     GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER (0);
     GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER (1);
-    int16 len = entryvec->n;
+    int4 len = entryvec->n;
     RXNFP *entry, *entry_l, *entry_r;
     OffsetNumber i, j;
     RXNFP *datum_l, *datum_r;
@@ -394,8 +394,8 @@ Datum
 rxnfp_union (PG_FUNCTION_ARGS)
 {
     GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER (0);
-    int16 i;
-    int16 len = entryvec->n;
+    int4 i;
+    int4 len = entryvec->n;
     int *size = (int *) PG_GETARG_POINTER (1);
     RXNFP *result = new_rxnfp ();
 

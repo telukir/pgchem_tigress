@@ -1,7 +1,7 @@
 /************************************************************************
  * obwrapper.cpp OpenBabel wrapper functions
  *
- * Copyright (c) 2004,2016 by Ernst-G. Schmid
+ * Copyright (c) 2004,2012 by Ernst-G. Schmid
  *
  * This file is part of the xchem::tigress project.
  *
@@ -109,338 +109,6 @@ static inline string convertFromOBMol(OBMol *input, const string format)
     conv.Write (input, &molstream);
 
     return molstream.str();
-}
-
-extern "C" _ISOTOPE_PATTERN *
-ob_molfile_to_isotope_pattern(char *molfile, int charge, double normal)
-{
-    _ISOTOPE_PATTERN *retval;
-    vector<double> msa_mz;
-    vector<double> msa_abundance;
-    vector<unsigned int> composition;
-    vector<unsigned int> m;
-    const double limit = 10e-30;
-    OBMol mol;
-    OBConversion conv;
-    string tmpStr (molfile);
-    istringstream molstream (tmpStr);
-    double main_peak_mass=0.0, scale = 1.0, maxintensity;
-
-    //Initialize composition vector to all zeroes
-    for(unsigned int i=0; i<mercury::MAX_ELEMENTS; i++)
-        composition.push_back(0);
-
-    conv.SetInAndOutFormats("MDL",NULL);
-
-    conv.Read(&mol, &molstream);
-
-    if (mol.Empty ())
-        return NULL;
-
-    // Add missing hydrogens, if any
-    mol.AddHydrogens(false, false); // All Hs, no PH correction
-
-    //Iterate over atoms and update the composition vector accordingly
-    FOR_ATOMS_OF_MOL(atom, mol)
-    {
-        switch (atom->GetAtomicNum())
-        {
-        case 1: // H
-            composition[0]++;
-            break;
-        case 6: // C
-            composition[1]++;
-            break;
-        case 7: // N
-            composition[2]++;
-            break;
-        case 8: // O
-            composition[3]++;
-            break;
-        case 16: // S
-            composition[4]++;
-            break;
-        case 35: // Br
-            composition[5]++;
-            break;
-        case 17: // Cl
-            composition[6]++;
-            break;
-        case 53: // I
-            composition[7]++;
-            break;
-        case 15: // P
-            composition[8]++;
-            break;
-        case 9: // F
-            composition[9]++;
-            break;
-        case 14: // Si
-            composition[10]++;
-            break;
-        case 26: // Fe
-            composition[11]++;
-            break;
-        case 5: // B
-            composition[12]++;
-            break;
-        case 34: // Se
-            composition[13]++;
-            break;
-        case 27: // Co
-            composition[14]++;
-            break;
-        case 12: // Mg
-            composition[15]++;
-            break;
-        case 79: // Au
-            composition[16]++;
-            break;
-        case 33: // As
-            composition[17]++;
-            break;
-        case 50: // Sn
-            composition[18]++;
-            break;
-        case 11: // Na
-            composition[19]++;
-            break;
-        case 19: // K
-            composition[20]++;
-            break;
-        case 52: // Te
-            composition[21]++;
-            break;
-        case 30: // Zn
-            composition[22]++;
-            break;
-        case 32: // Ge
-            composition[23]++;
-            break;
-        case 20: // Ca
-            composition[24]++;
-            break;
-        case 51: // Sb
-            composition[25]++;
-            break;
-        case 29: // Cu
-            composition[26]++;
-            break;
-        case 13: // Al
-            composition[27]++;
-            break;
-        case 25: // Mn
-            composition[28]++;
-            break;
-        case 78: // Pt
-            composition[29]++;
-            break;
-        case 64: // Gd
-            composition[30]++;
-            break;
-        case 80: // Hg
-            composition[31]++;
-            break;
-        case 42: // Mo
-            composition[32]++;
-            break;
-        case 38: // Sr
-            composition[33]++;
-            break;
-        case 31: // Ga
-            composition[34]++;
-            break;
-        case 28: // Ni
-            composition[35]++;
-            break;
-        case 82: // Pb
-            composition[36]++;
-            break;
-        case 47: // Ag
-            composition[37]++;
-            break;
-        case 83: // Bi
-            composition[38]++;
-            break;
-        case 81: // Tl
-            composition[39]++;
-            break;
-        case 24: // Cr
-            composition[40]++;
-            break;
-        case 37: // Rb
-            composition[41]++;
-            break;
-        case 40: // Zr
-            composition[42]++;
-            break;
-        case 22: // Ti
-            composition[43]++;
-            break;
-        case 74: // W
-            composition[44]++;
-            break;
-        case 4: // Be
-            composition[45]++;
-            break;
-        case 23: // V
-            composition[46]++;
-            break;
-        case 48: // Cd
-            composition[47]++;
-            break;
-        case 56: // Ba
-            composition[48]++;
-            break;
-        case 73: // Ta
-            composition[49]++;
-            break;
-        case 3: // Li
-            composition[50]++;
-            break;
-        case 55: // Cs
-            composition[51]++;
-            break;
-        case 46: // Pd
-            composition[52]++;
-            break;
-        case 58: // Ce
-            composition[53]++;
-            break;
-        case 44: // Ru
-            composition[54]++;
-            break;
-        case 57: // La
-            composition[55]++;
-            break;
-        case 60: // Nd
-            composition[56]++;
-            break;
-        case 75: // Re
-            composition[57]++;
-            break;
-        case 72: // Hf
-            composition[58]++;
-            break;
-        case 90: // Th
-            composition[59]++;
-            break;
-        case 2: // He
-            composition[60]++;
-            break;
-        case 18: // Ar
-            composition[61]++;
-            break;
-        case 71: // Lu
-            composition[62]++;
-            break;
-        case 92: // U
-            composition[63]++;
-            break;
-        case 36: // Kr
-            composition[64]++;
-            break;
-        case 77: // Ir
-            composition[65]++;
-            break;
-        case 49: // In
-            composition[66]++;
-            break;
-        case 45: // Rh
-            composition[67]++;
-            break;
-        case 67: // Ho
-            composition[68]++;
-            break;
-        case 66: // Dy
-            composition[69]++;
-            break;
-        case 70: // Yb
-            composition[70]++;
-            break;
-        case 63: // Eu
-            composition[71]++;
-            break;
-        case 76: // Os
-            composition[72]++;
-            break;
-        case 59: // Pr
-            composition[73]++;
-            break;
-        case 65: // Tb
-            composition[74]++;
-            break;
-        case 68: // Er
-            composition[75]++;
-            break;
-        case 54: // Xe
-            composition[76]++;
-            break;
-        case 21: // Sc
-            composition[77]++;
-            break;
-        case 10: // Ne
-            composition[78]++;
-            break;
-        case 62: // Sm
-            composition[79]++;
-            break;
-        case 69: // Tm
-            composition[80]++;
-            break;
-        case 41: // Nb
-            composition[81]++;
-            break;
-        case 39: // Y
-            composition[82]++;
-            break;
-        default: // Others ignored
-            std::cerr << "Element " << atom->GetAtomicNum() << " not recognized by MERCURY7! Edit libmercury++.h and recompile to add it to the internal isotopes table." << std::endl;
-            return NULL;
-            break;
-        }
-    }
-
-    // Calculate isotope patterns with MERCURY7
-    if(0 != mercury::mercury(msa_mz, msa_abundance, composition, charge, limit))
-    {
-        return NULL;
-    }
-
-    // Allocate return value and copy values
-    retval = (_ISOTOPE_PATTERN*) calloc(1,sizeof(_ISOTOPE_PATTERN));
-
-    retval->num_entries = msa_mz.size();
-    retval->mz=(double*) calloc(msa_mz.size(), sizeof(double));
-    retval->intensity=(double*) calloc(msa_abundance.size(), sizeof(double));
-    retval->intensity_normalized=(double*) calloc(msa_abundance.size(), sizeof(double));
-    retval->md=(unsigned int*) calloc(msa_abundance.size(), sizeof(unsigned int));
-
-    copy(msa_mz.begin(), msa_mz.end(), retval->mz);
-    copy(msa_abundance.begin(), msa_abundance.end(), retval->intensity);
-    copy(msa_abundance.begin(), msa_abundance.end(), retval->intensity_normalized);
-
-    maxintensity = *max_element(msa_abundance.begin(), msa_abundance.end());
-
-    if(maxintensity > 0.0)
-    {
-        scale = normal / maxintensity;
-    }
-
-    for(unsigned int i=0; i<retval->num_entries; i++)
-    {
-        retval->intensity_normalized[i] *= scale;
-        if(retval->intensity_normalized[i] == normal) main_peak_mass = retval->mz[i];
-    }
-
-    for(unsigned int i=0; i<retval->num_entries; i++)
-    {
-        m.push_back(retval->mz[i]-main_peak_mass);
-    }
-
-    copy(m.begin(), m.end(), retval->md);
-
-    return retval;
 }
 
 extern "C" char *
@@ -893,7 +561,7 @@ ob_molweight (char *smiles)
 {
     OBMol *mol;
     string tmpStr (smiles);
-    double molweight = 0.0;
+    double molweight = 0.0d;
 
     mol = convertToOBMol(tmpStr,"SMI");
 
@@ -1073,7 +741,7 @@ ob_3D (char *molfile)
 }
 
 extern "C" char *
-ob_add_hydrogens (char *smiles, int polaronly, int correct4PH, double PH)
+ob_add_hydrogens (char *smiles, int polaronly, int correct4PH)
 {
     OBMol *mol;
     string tmpStr (smiles);
@@ -1082,7 +750,7 @@ ob_add_hydrogens (char *smiles, int polaronly, int correct4PH, double PH)
 
     mol = convertToOBMol(tmpStr, "SMI");
 
-    mol->AddHydrogens((polaronly != 0), (correct4PH != 0), PH);
+    mol->AddHydrogens((polaronly != 0), (correct4PH != 0));
 
     outstring = convertFromOBMol(mol,"SMI");
 
@@ -1286,7 +954,7 @@ ob_exactmass (char *smiles)
 {
     OBMol *mol;
     string tmpStr (smiles);
-    double exactmass = 0.0;
+    double exactmass = 0.0d;
 
     mol = convertToOBMol(tmpStr, "SMI");
 
@@ -1313,8 +981,6 @@ ob_describe_fp2 (char *smiles)
     //memset(fp,0x0, FPSIZE2*sizeof(unsigned int));
 
     mol = convertToOBMol(tmpStr, "SMI");
-
-    mol->ConvertDativeBonds();
 
     fprint->GetFingerprint (mol, vfp);
 
@@ -1394,8 +1060,6 @@ ob_fp3 (char *smiles, unsigned int *fp)
     {
 
         mol = convertToOBMol(tmpStr, "SMI");
-
-        mol->ConvertDativeBonds();
 
         fprint->GetFingerprint (mol, vfp);
 
@@ -1490,8 +1154,6 @@ ob_fp_MACCS (char *smiles, unsigned int *fp)
 
         mol = convertToOBMol(tmpStr,"SMI");
 
-        mol->ConvertDativeBonds();
-
         //cout << mol.NumHvyAtoms() << endl;
 
         //cout << fprint->GetID() << endl;
@@ -1539,8 +1201,6 @@ ob_fp (char *smiles, unsigned int *fp)
     //ob_rehydrate_molecule(&mol, serializedInput);
 
     mol = convertToOBMol(tmpStr,"SMI");
-
-    mol->ConvertDativeBonds();
 
     fprint2->GetFingerprint (mol, vfp);
 
@@ -2271,7 +1931,7 @@ ob_MR (char *smiles)
     //OBGroupContrib theMR("MR", "mr.txt", "molar refractivity");
     OBDescriptor* pDescr = OBDescriptor::FindType("MR");
     string tmpStr (smiles);
-    double MR = 0.0;
+    double MR = 0.0d;
 
     mol = convertToOBMol(tmpStr,"SMI");
     mol->AddHydrogens (false, false);
@@ -2293,7 +1953,7 @@ ob_TPSA (char *smiles)
     //OBGroupContrib theTPSA("TPSA", "psa.txt", "topological polar surface area");
     OBDescriptor* pDescr = OBDescriptor::FindType("TPSA");
     string tmpStr (smiles);
-    double TPSA = 0.0;
+    double TPSA = 0.0d;
 
     mol = convertToOBMol(tmpStr,"SMI");
 //
@@ -2317,7 +1977,7 @@ ob_logP (char *smiles)
     //OBGroupContrib thelogP("logP", "logp.txt", "octanol/water partition coefficient");
     OBDescriptor* pDescr = OBDescriptor::FindType("logP");
     string tmpStr (smiles);
-    double LOGP = 0.0;
+    double LOGP = 0.0d;
 
     mol = convertToOBMol(tmpStr,"SMI");
     mol->AddHydrogens (false, false);
@@ -2706,47 +2366,41 @@ extern "C" char *serializeOBMol(char* smiles) {
 
 extern "C" char *serializeOBMol(char *input, int input_format)
 {
-    OBMol *mol;
-    //OBConversion conv;
-    string format;
+    OBMol mol;
+    OBConversion conv;
     string tmpStr (input);
-    //istringstream molstream (tmpStr);
+    istringstream molstream (tmpStr);
 
     switch (input_format)
     {
-    case FORMAT_V2000:
     case FORMAT_V3000:
-        //conv.SetInFormat("MOL");
-        format = "MOL";
+        conv.SetInFormat("MOL");
+        break;
+    case FORMAT_V2000:
+        conv.SetInFormat("MOL");
         break;
     case FORMAT_INCHI:
-        //conv.SetInFormat("INCHI");
-        format = "INCHI";
+        conv.SetInFormat("INCHI");
         break;
     case FORMAT_SMILES:
-        format = "SMI";
-        //conv.SetInFormat("SMI");
+        conv.SetInFormat("SMI");
         break;
     }
 
-    //conv.Read (&mol, &molstream);
+    conv.Read (&mol, &molstream);
 
-    mol = convertToOBMol(tmpStr, format);
-
-    if (mol->Empty())
+    if (mol.Empty())
     {
         return NULL;
     }
 
-    mol->ConvertDativeBonds();
-
-    unsigned int numatoms = mol->NumAtoms();
-    unsigned int numbonds = mol->NumBonds();
+    unsigned int numatoms = mol.NumAtoms();
+    unsigned int numbonds = mol.NumBonds();
     vector<OBGenericData*>::iterator data;
     vector<OBGenericData*> stereoData;
-    if (mol->HasData(OBGenericDataType::StereoData))
+    if (mol.HasData(OBGenericDataType::StereoData))
     {
-        stereoData = mol->GetAllData(OBGenericDataType::StereoData);
+        stereoData = mol.GetAllData(OBGenericDataType::StereoData);
     }
     unsigned int numstereo = stereoData.size();
     unsigned int totalsize = (numatoms*sizeof(_ATOM))+(numbonds*sizeof(_BOND))+(numstereo*sizeof(_STEREO))+(4*sizeof(unsigned int));
@@ -2756,7 +2410,7 @@ extern "C" char *serializeOBMol(char *input, int input_format)
     _BOND *bondptr;
     _STEREO *stereoptr;
 
-    //mol->Kekulize();
+    //mol.Kekulize();
 
     unsigned int *uintptr = (unsigned int*) retval;
 

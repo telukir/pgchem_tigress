@@ -31,12 +31,12 @@ then
 fi
 ##################################################################################
 echo "Starting the process.. ==================================>>>>>>>>>>>>>>>>>>>>>>"
-read -p "Have you checked the version of the Postgresql? If you have checked say (Y or y) else say (N or n) and edit your postgresql version in line 31:" -n 1 -r
+read -p "Have you checked the version of the Postgresql? If you have checked say (Y or y) else say (N or n) and edit your postgresql version in line 39:" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	apt-get source postgresql-9.4
-	mv postgresql-9.4-9.4.5 postgresql #had to be changed accordingly
+	mv postgresql-9.4-9.4.9 postgresql #had to be changed accordingly
 	cd postgresql
 else
 	exit

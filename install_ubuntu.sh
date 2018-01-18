@@ -2,7 +2,7 @@
 START=$(date +%s)
 
 ##################################################################################
-POSTGRESQL_LIB_DIR=/usr/lib/postgresql/9.4/lib
+POSTGRESQL_LIB_DIR=/usr/lib/postgresql/9.6/lib
 OB_INSTALL_DIR=$POSTGRESQL_LIB_DIR/openbabel
 ##################################################################################
 read -p "Have you set the postgresql apt repository settings?(Yy/Nn)" -n 1 -r
@@ -35,8 +35,8 @@ read -p "Have you checked the version of the Postgresql? If you have checked say
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	apt-get source postgresql-9.4
-	mv postgresql-9.4-9.4.5 postgresql #had to be changed accordingly
+	apt-get source postgresql-9.6
+	mv postgresql-9.6_9.6.5 postgresql #had to be changed accordingly
 	cd postgresql
 else
 	exit
